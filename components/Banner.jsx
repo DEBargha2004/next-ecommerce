@@ -1,5 +1,4 @@
 import headphone from '../assets/headphone_banner.png'
-import Image from 'next/image'
 
 function Banner () {
   return (
@@ -15,8 +14,8 @@ function Banner () {
       <div>
         <img
           src={headphone.src}
-        //   height={250}
-        //   width={250}
+          //   height={250}
+          //   width={250}
           className='mr-[60px] md:mr-[100px] w-[80%]'
           alt=''
         />

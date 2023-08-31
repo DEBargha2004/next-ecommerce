@@ -11,3 +11,8 @@ body {
 body {
   padding: 15px 20px;
 }
+
+th,
+td {
+  padding: 0 10px;
+}
