@@ -8,10 +8,10 @@ import { fireStoreDB } from './firebase.config'
 
 function App ({ children }) {
   const [cart, setCart] = useState([])
-  const { user, isLoaded } = useUser()
+  const { user } = useUser()
 
   useEffect(() => {
-    if (!isLoaded) return
+    if (!user?.id) return
     getDocs(collection(fireStoreDB, `users/${user.id}/cart`)).then(items => {
       const cart_cache = []
       items.docs?.forEach(item => {
@@ -19,7 +19,7 @@ function App ({ children }) {
       })
       setCart(cart_cache)
     })
-  }, [isLoaded])
+  }, [user])
   return (
     <GlobalAppState.Provider value={{ cart, setCart }}>
       {children}

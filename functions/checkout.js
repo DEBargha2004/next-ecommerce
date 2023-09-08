@@ -4,6 +4,11 @@ export const checkout = async ({ product, quantity, router, products }) => {
     body: JSON.stringify({ products: products || [{ ...product, quantity }] })
   })
 
-  const { url: checkoutUrl } = await checkoutInfo.json()
-  router.push(checkoutUrl)
+  try {
+    checkoutInfo = await checkoutInfo.json()
+    let url = checkoutInfo?.url
+    url ? router.push(url) : null
+  } catch (error) {
+    console.error(error)
+  }
 }

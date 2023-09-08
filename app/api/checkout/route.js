@@ -1,10 +1,17 @@
+import { getAuth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
 export async function POST (request) {
-  const stripeInstance = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY)
-
+  const stripeInstance = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY)
+  let userId = getAuth(request).userId
+  if (!auth?.userId) {
+    return NextResponse.json({
+      data: 'You are not authorized'
+    })
+  }
   request = await request.json()
+
   const products_refetched = []
   for (const product of request.products) {
     let product_refetched = await fetch(
@@ -13,6 +20,12 @@ export async function POST (request) {
     product_refetched = await product_refetched.json()
     products_refetched.push({ ...product, ...product_refetched })
   }
+
+  let processed_productInfo = products_refetched.map(productInfo => ({
+    id: productInfo.id,
+    quantity: productInfo.quantity,
+    price: productInfo.price
+  }))
 
   const session = await stripeInstance.checkout.sessions.create({
     mode: 'payment',
@@ -36,7 +49,11 @@ export async function POST (request) {
         minimum: 1
       },
       quantity: product.quantity
-    }))
+    })),
+    metadata: {
+      orders: JSON.stringify(processed_productInfo),
+      userId
+    }
   })
 
   return NextResponse.json({ url: session.url })
