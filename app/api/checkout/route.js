@@ -1,11 +1,11 @@
 import { getAuth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import os from 'os'
-
-os.hostname()
+import { headers } from 'next/headers'
 
 export async function POST (request) {
+  const headersList = headers()
+  const origin = headersList.get('origin')
   const stripeInstance = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY)
   let userId = getAuth(request).userId
   if (!userId) {
@@ -35,8 +35,8 @@ export async function POST (request) {
     submit_type: 'pay',
     billing_address_collection: 'required',
     shipping_options: [{ shipping_rate: 'shr_1NkpxkSB7hQsCwxuNLmTYC5n' }],
-    success_url: `${os.hostname()}/success`,
-    cancel_url: `${os.hostname()}/cancel`,
+    success_url: `${origin}/success`,
+    cancel_url: `${origin}/cancel`,
     line_items: products_refetched?.map(product => ({
       price_data: {
         currency: 'INR',
