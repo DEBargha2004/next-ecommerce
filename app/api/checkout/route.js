@@ -5,7 +5,7 @@ import Stripe from 'stripe'
 export async function POST (request) {
   const stripeInstance = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY)
   let userId = getAuth(request).userId
-  if (!auth?.userId) {
+  if (!userId) {
     return NextResponse.json({
       data: 'You are not authorized'
     })

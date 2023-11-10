@@ -5,19 +5,21 @@ import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
-const addToOrders = async metadata => {
+const addToOrders = async (metadata, lineItems) => {
   const orders = await JSON.parse(metadata.orders)
   let userId = metadata.userId
 
-  console.log(metadata)
-  for (const order of orders) {
+  // console.log(metadata)
+  let index = 0
+  for (const order of lineItems) {
     await addDoc(collection(fireStoreDB, `users/${userId}/orders`), {
-      prod_id: order?.id,
-      prod_price: order?.price,
+      prod_id: orders[index].id,
+      prod_price: order?.amount_total / 100,
       prod_quantity: order?.quantity
     })
 
     await deleteDoc(doc(fireStoreDB, `users/${userId}/cart/${order?.id}`))
+    index++
   }
 }
 
@@ -50,8 +52,8 @@ export async function POST (request) {
         { limit: 100 },
         (err, lineItems) => {
           try {
-            // console.log(lineItems)
-            addToOrders(session.metadata)
+            console.log(lineItems)
+            addToOrders(session.metadata, lineItems.data)
           } catch (error) {
             console.error(error, err)
           }
