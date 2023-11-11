@@ -4,6 +4,13 @@ import { addDoc, collection, deleteDoc, doc } from 'firebase/firestore'
 import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { buffer } from 'micro'
+
+export const config = {
+  api: {
+    bodyParser: false
+  }
+}
 
 const addToOrders = async (metadata, lineItems) => {
   const orders = await JSON.parse(metadata.orders)
@@ -24,11 +31,10 @@ const addToOrders = async (metadata, lineItems) => {
 }
 
 export async function POST (request) {
-  //   request = await request.json()
+  const body = await request.text()
+
   const headersList = headers()
   const sig = headersList.get('stripe-signature')
-
-  const body = await request.text()
   // const body = request.body
 
   const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY)

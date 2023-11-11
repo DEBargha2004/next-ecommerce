@@ -6,7 +6,9 @@ import { headers } from 'next/headers'
 export async function POST (request) {
   const headersList = headers()
   const origin = headersList.get('origin')
+
   const stripeInstance = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY)
+
   let userId = getAuth(request).userId
   if (!userId) {
     return NextResponse.json({
