@@ -6,12 +6,6 @@ import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { buffer } from 'micro'
 
-export const config = {
-  api: {
-    bodyParser: false
-  }
-}
-
 const addToOrders = async (metadata, lineItems) => {
   const orders = await JSON.parse(metadata.orders)
   let userId = metadata.userId
