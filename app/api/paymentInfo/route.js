@@ -34,7 +34,7 @@ export async function POST (request) {
   const body = await request.text()
 
   const headersList = headers()
-  const sig = headersList.get('stripe-signature')
+  const sig = headersList.get('Stripe-Signature') ?? ''
   // const body = request.body
 
   const stripe = new Stripe(process.env.NEXT_STRIPE_SECRET_KEY, {
