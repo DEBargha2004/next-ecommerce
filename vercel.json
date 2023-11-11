@@ -1,7 +1,0 @@
-{
-    "functions":{
-        "api/paymentInfo":{
-            "bodyParser":false
-        }
-    }
-}
